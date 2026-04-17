@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRIDAY KA UJALA - Admission Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* === BASE SETTINGS === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
+            color: #111827;
+            font-size: 10px;
+            line-height: 1.3;
+        }
+
+        /* === A4 PAPER SETUP === */
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            padding: 4mm 15mm 6mm 15mm;
+            margin: 20px auto;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .alert {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #bfdbfe;
+            display: none;
+        }
+
+        /* === SECTION STYLING === */
+        .section {
+            margin-bottom: 5px;
+        }
+
+        .section-header {
+            font-size: 11px;
+            font-weight: 800;
+            background: #f3f4f6;
+            margin-bottom: 6px;
+            padding: 4px 8px;
+            border-left: 3px solid #2563eb;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* === GRID LAYOUT FOR FIELDS === */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px 5px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px 5px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px 5px;
+        }
+
+        /* === INPUT STYLING === */
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 3px;
+            padding: 4px 6px;
+            font-size: 10px;
+            font-family: inherit;
+            background-color: #fff;
+            transition: border-color 0.2s;
+            height: 23px;
+            /* Tuned height to balance the new photos vertically */
+        }
+
+        textarea {
+            height: 32px;
+            resize: none;
+            line-height: 1.2;
+        }
+
+        input[readonly] {
+            background-color: #f9fafb;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
+
+        /* === RADIO BUTTONS === */
+        .inline-radios {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            height: 23px;
+            font-size: 10px;
+        }
+
+        .inline-radios input[type="radio"] {
+            width: 14px;
+            height: 14px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .inline-radios label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: normal;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        /* === HEADER LAYOUT === */
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #111827;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+
+        .school-title {
+            flex-grow: 1;
+            padding-top: 5px;
+        }
+
+        .school-title h1 {
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+
+        .school-title h2 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .school-title p {
+            font-size: 10px;
+            color: #4b5563;
+        }
+
+        /* Top Right Block & Photo Setup */
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .photo-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .photo-compact {
+            width: 20mm;
+            height: 25mm;
+            border: 2px dotted #6b7280;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 9px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .photo-compact img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .photo-input {
+            font-size: 9px;
+            width: 28mm;
+        }
+
+        .meta-compact {
+            border: 1px solid #d1d5db;
+            padding: 5px 8px;
+            border-radius: 4px;
+            background: #f9fafb;
+            min-width: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 3px;
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .meta-row label {
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        .meta-row input,
+        .meta-row select {
+            border: none;
+            background: transparent;
+            text-align: right;
+            width: 80px;
+            font-size: 10px;
+            padding: 0;
+            height: auto;
+            border-bottom: 1px dotted #ccc;
+            border-radius: 0;
+            outline: none;
+        }
+
+        .meta-row select {
+            direction: rtl;
+        }
+
+        /* === PARENT BOXES === */
+        .parent-info-wrapper {
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background: #fdfdfd;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .parent-info-content {
+            flex: 1;
+        }
+
+        .parent-info-wrapper h4 {
+            font-size: 10px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* === SIBLING TABLE === */
+        .sibling-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        .sibling-table th,
+        .sibling-table td {
+            border: 1px solid #d1d5db;
+            padding: 4px 6px;
+        }
+
+        .sibling-table th {
+            background-color: #f3f4f6;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .sibling-table input {
+            border: none;
+            padding: 2px 4px;
+            height: 20px;
+            background: transparent;
+        }
+
+        /* === DECLARATION & SIGNATURE === */
+        p.declaration-text {
+            font-size: 10px;
+            line-height: 1.4;
+            color: #374151;
+            text-align: justify;
+            margin-bottom: 8px;
+        }
+
+        .sig-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 25px;
+        }
+
+        .sig-block {
+            text-align: center;
+            border-top: 1px solid #111827;
+            padding-top: 4px;
+            width: 40%;
+        }
+
+        .sig-block span {
+            display: block;
+            font-size: 9px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* === ACTIONS BUTTONS === */
+        .actions-panel {
+            text-align: right;
+            margin: 10px auto;
+            max-width: 210mm;
+            padding: 0 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #ffffff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #f9fafb;
+        }
+
+        .btn-primary {
+            background-color: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+        }
+
+        .btn-info {
+            background-color: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        .btn-info:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* === RESPONSIVE LAYOUT === */
+        @media screen and (max-width: 768px) {
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 15px;
+            }
+
+            .header-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .school-title {
+                text-align: center;
+            }
+
+            .header-right {
+                flex-direction: column-reverse;
+                /* Ensure photo snaps under */
+                align-items: center;
+                width: 100%;
+            }
+
+            .meta-compact {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .parent-info-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .parent-info-wrapper h4 {
+                margin-bottom: 10px;
+            }
+
+            .sig-section {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .sig-block {
+                width: 100%;
+            }
+
+            .alert {
+                display: block;
+            }
+        }
+
+        /* === PDF & PRINT EXCLUSIVE FIXES === */
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            @page {
+                margin: 0;
+            }
+
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 6mm 15mm 12mm 15mm;
+                max-width: 100%;
+                width: 100%;
+                height: 100vh;
+                page-break-after: avoid;
+                page-break-before: avoid;
+            }
+
+            .actions-panel,
+            .photo-wrapper>input,
+            .alert {
+                display: none !important;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            input[type="number"],
+            input[type="tel"],
+            select,
+            textarea {
+                border-color: #9ca3af;
+                background-color: transparent !important;
+                color: #000;
+            }
+
+            input[type="radio"] {
+                -webkit-appearance: radio !important;
+                appearance: radio !important;
+            }
+
+            .section-header {
+                background-color: #f3f4f6 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .parent-info-wrapper {
+                border-color: #cbd5e1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="admissionForm" onsubmit="submitForm(event)">
+        <div class="page-container" id="printableArea">
+            <div class="alert">
+                <strong>Attention:</strong> Complete the form. Age is auto-calculated. Keep a copy via "Save as PDF"
+                before submitting your response.
+            </div>
+
+            <!-- This wrapper stretches vertically -->
+            <div class="main-content">
+
+                <!-- 1. HEADER SECTION -->
+                <div class="header-wrapper">
+                    <div class="header-left" style="display: flex; align-items: center; gap: 15px; flex-grow: 1;">
+                        <img src="hkulogo.png" alt="Logo"
+                            style="width: 75px; height: 75px; object-fit: contain; flex-shrink: 0;">
+                        <div class="school-title" style="padding-top: 0; flex-grow: 1;">
+                            <h1 id="hku">HRIDAY KA UJALA</h1>
+                            <h2 id="hku1">Registration Cum Admission Form</h2>
+                            <p id="hku2">Nala Camp, Rangpuri Pahadi, New Delhi – 110070</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <!-- Child Photograph -->
+                        <div class="photo-wrapper">
+                            <div class="photo-compact" id="boxChild"
+                                onclick="document.getElementById('childPhoto').click()">
+                                <span>Child<br>Photo</span>
+                                <img id="imgChild" src="" alt="Child">
+                            </div>
+                            <input type="file" id="childPhoto" class="photo-input" accept="image/*"
+                                style="display: none;" onchange="previewImg(this, 'imgChild', 'boxChild')">
+                        </div>
+
+                        <!-- Top Right Block -->
+                        <div class="meta-compact">
+                            <div class="meta-row">
+                                <label>App No:</label>
+                                <input type="text" name="app_no" value="" placeholder="......">
+                            </div>
+                            <div class="meta-row">
+                                <label>Session:</label>
+                                <input type="text" name="session" value="2026-27">
+                            </div>
+                            <div class="meta-row">
+                                <label>Date:</label>
+                                <input type="date" name="submission_date" id="date" required>
+                            </div>
+                            <div class="meta-row">
+                                <label>Class Admitted:</label>
+                                <select name="class_admitted" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="Pre-Nursery">Pre-Nursery</option>
+                                    <option value="Nursery">Nursery</option>
+                                    <option value="KG">KG</option>
+                                    <option value="UKG">UKG</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. STUDENT DETAILS -->
+                <div class="section">
+                    <div class="section-header">Student Details</div>
+                    <div class="grid-4">
+                        <div style="grid-column: span 2;">
+                            <label class="label">Full Name of Child <span style="color:red">*</span></label>
+                            <input type="text" name="child_name" required>
+                        </div>
+                        <div>
+                            <label class="label">Date of Birth <span style="color:red">*</span></label>
+                            <input type="date" name="dob" id="dob" required onchange="calculateAge()">
+                        </div>
+                        <div>
+                            <label class="label">Calculated Age</label>
+                            <input type="text" name="calculated_age" id="calculated_age" readonly
+                                placeholder="Auto-calculated">
+                        </div>
+                        <div>
+                            <label class="label">Gender <span style="color:red">*</span></label>
+                            <div class="inline-radios">
+                                <label for="gen_m"><input type="radio" id="gen_m" name="gender" value="Male" checked>
+                                    Male</label>
+                                <label for="gen_f"><input type="radio" id="gen_f" name="gender" value="Female">
+                                    Female</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="label">Blood Group</label>
+                            <input type="text" name="blood_group">
+                        </div>
+                        <div>
+                            <label class="label">Religion</label>
+                            <select name="religion">
+                                <option value="" disabled selected>Select...</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Muslim">Muslim</option>
+                                <option value="Sikh">Sikh</option>
+                                <option value="Christian">Christian</option>
+                                <option value="Jain">Jain</option>
+                                <option value="Buddhist">Buddhist</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label">Category</label>
+                            <select name="category">
+                                <option value="General">General</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="OBC">OBC</option>
+                                <option value="EWS">EWS</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label">Aadhar Number</label>
+                            <input type="text" name="child_aadhar" maxlength="12" pattern="\d{12}">
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="label">Previous Schooling?</label>
+                            <div class="inline-radios">
+                                <label for="prev_y"><input type="radio" id="prev_y" name="prev_school" value="Yes">
+                                    Yes</label>
+                                <label for="prev_n"><input type="radio" id="prev_n" name="prev_school" value="No"
+                                        checked> No</label>
+                                <input type="text" name="prev_school_name" placeholder="If yes, name of school"
+                                    style="margin-left:5px; flex-grow: 1; border:none; border-bottom:1px solid #ccc; height:20px;">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="label">Disability (If Any)</label>
+                            <input type="text" name="disability">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PARENT DETAILS (STACKED TO ABSORB EMPTY A4 VERTICAL SPACE) -->
+                <div class="section">
+                    <div class="section-header">Parent Details</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+
+                        <!-- Father -->
+                        <div class="parent-info-wrapper">
+                            <div class="parent-info-content">
+                                <h4>Father's Information</h4>
+                                <div class="grid-4" style="gap: 8px 5px;">
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Full Name</label>
+                                        <input type="text" name="f_name">
+                                    </div>
+                                    <div>
+                                        <label class="label">Aadhar Number</label>
+                                        <input type="text" name="f_aadhar" maxlength="12" pattern="\d{12}">
+                                    </div>
+                                    <div>
+                                        <label class="label">Contact No.</label>
+                                        <input type="tel" name="f_mob">
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Qualification</label>
+                                        <input type="text" name="f_edu">
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Occupation & Income</label>
+                                        <input type="text" name="f_occ_inc">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Father Photo Box perfectly nested alongside his inputs -->
+                            <div class="photo-wrapper">
+                                <div class="photo-compact" id="boxFather"
+                                    onclick="document.getElementById('fatherPhoto').click()">
+                                    <span>Father's<br>Photo</span>
+                                    <img id="imgFather" src="" alt="Father">
+                                </div>
+                                <input type="file" id="fatherPhoto" class="photo-input" accept="image/*"
+                                    style="display: none;" onchange="previewImg(this, 'imgFather', 'boxFather')">
+                            </div>
+                        </div>
+
+                        <!-- Mother -->
+                        <div class="parent-info-wrapper">
+                            <div class="parent-info-content">
+                                <h4>Mother's Information</h4>
+                                <div class="grid-4" style="gap: 8px 5px;">
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Full Name</label>
+                                        <input type="text" name="m_name">
+                                    </div>
+                                    <div>
+                                        <label class="label">Aadhar Number</label>
+                                        <input type="text" name="m_aadhar" maxlength="12" pattern="\d{12}">
+                                    </div>
+                                    <div>
+                                        <label class="label">Contact No.</label>
+                                        <input type="tel" name="m_mob">
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Qualification</label>
+                                        <input type="text" name="m_edu">
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <label class="label">Occupation & Income</label>
+                                        <input type="text" name="m_occ_inc">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mother Photo Box perfectly nested alongside her inputs -->
+                            <div class="photo-wrapper">
+                                <div class="photo-compact" id="boxMother"
+                                    onclick="document.getElementById('motherPhoto').click()">
+                                    <span>Mother's<br>Photo</span>
+                                    <img id="imgMother" src="" alt="Mother">
+                                </div>
+                                <input type="file" id="motherPhoto" class="photo-input" accept="image/*"
+                                    style="display: none;" onchange="previewImg(this, 'imgMother', 'boxMother')">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 4. ADDRESS & CONTACT INFO -->
+                <div class="section">
+                    <div class="section-header">Address Information</div>
+                    <div class="grid-3" style="gap: 8px 5px;">
+                        <div style="grid-column: span 3;">
+                            <label class="label">Current Residential Address</label>
+                            <textarea name="address"></textarea>
+                        </div>
+                        <div>
+                            <label class="label">City / District</label>
+                            <input type="text" name="city" value="New Delhi">
+                        </div>
+                        <div>
+                            <label class="label">State</label>
+                            <input type="text" name="state" value="Delhi">
+                        </div>
+                        <div>
+                            <label class="label">PIN Code</label>
+                            <input type="text" name="pin" value="110070" maxlength="6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. SIBLING DETAILS -->
+                <div class="section">
+                    <div class="section-header">Sibling Details</div>
+                    <table class="sibling-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 28%;">Sibling Name</th>
+                                <th style="width: 14%;">Gender</th>
+                                <th style="width: 8%;">Age</th>
+                                <th style="width: 15%;">Class</th>
+                                <th style="width: 35%;">School (If attending)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" name="sibling1_name" placeholder="1."></td>
+                                <td>
+                                    <div class="inline-radios" style="gap: 6px; justify-content: center;">
+                                        <label><input type="radio" name="sibling1_gender" value="M"> M</label>
+                                        <label><input type="radio" name="sibling1_gender" value="F"> F</label>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="sibling1_age"></td>
+                                <td><input type="text" name="sibling1_class"></td>
+                                <td><input type="text" name="sibling1_school"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="sibling2_name" placeholder="2."></td>
+                                <td>
+                                    <div class="inline-radios" style="gap: 6px; justify-content: center;">
+                                        <label><input type="radio" name="sibling2_gender" value="M"> M</label>
+                                        <label><input type="radio" name="sibling2_gender" value="F"> F</label>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="sibling2_age"></td>
+                                <td><input type="text" name="sibling2_class"></td>
+                                <td><input type="text" name="sibling2_school"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="sibling3_name" placeholder="3."></td>
+                                <td>
+                                    <div class="inline-radios" style="gap: 6px; justify-content: center;">
+                                        <label><input type="radio" name="sibling3_gender" value="M"> M</label>
+                                        <label><input type="radio" name="sibling3_gender" value="F"> F</label>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="sibling3_age"></td>
+                                <td><input type="text" name="sibling3_class"></td>
+                                <td><input type="text" name="sibling3_school"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="sibling4_name" placeholder="4."></td>
+                                <td>
+                                    <div class="inline-radios" style="gap: 6px; justify-content: center;">
+                                        <label><input type="radio" name="sibling4_gender" value="M"> M</label>
+                                        <label><input type="radio" name="sibling4_gender" value="F"> F</label>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="sibling4_age"></td>
+                                <td><input type="text" name="sibling4_class"></td>
+                                <td><input type="text" name="sibling4_school"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 6. DECLARATION & SIGNATURE -->
+                <div class="section" style="margin-bottom: 0;">
+                    <div class="section-header">Declaration</div>
+                    <p class="declaration-text">
+                        I declare that the above information is true to the best of my knowledge. I will follow the
+                        rules of the <strong>HRIDAY KA UJALA – Learning Center</strong> and ensure my child attends
+                        regularly.
+                    </p>
+
+                    <div class="sig-section">
+                        <div class="sig-block">
+                            <div class="label">Signature of Father / Mother</div>
+                        </div>
+                        <div class="sig-block">
+                            <div class="label">Signature of Centre Incharge</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- End main-content -->
+        </div>
+
+        <!-- ACTIONS PANEL -->
+        <div class="actions-panel" style="justify-content: center; margin-top: 15px;">
+            <button type="button" class="btn" onclick="saveAsPDF()">Save as PDF</button>
+            <button type="button" class="btn btn-info" onclick="window.print()">Print Form</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Submit Form</button>
+        </div>
+    </form>
+
+    <script>
+
+        // Set today's date automatically
+        document.addEventListener("DOMContentLoaded", function () {
+            const dateField = document.getElementById('date');
+            if (dateField) {
+                dateField.valueAsDate = new Date();
+            }
+        });
+
+
+        // AGE CALCULATION
+        function calculateAge() {
+
+            const dobInput = document.getElementById('dob').value;
+            const ageOutput = document.getElementById('calculated_age');
+
+            if (!dobInput) {
+                ageOutput.value = '';
+                return;
+            }
+
+            const dobDate = new Date(dobInput);
+            const today = new Date();
+
+            let years = today.getFullYear() - dobDate.getFullYear();
+            let months = today.getMonth() - dobDate.getMonth();
+
+            if (months < 0 || (months === 0 && today.getDate() < dobDate.getDate())) {
+                years--;
+                months += 12;
+            }
+
+            if (years < 0) {
+                ageOutput.value = 'Invalid DOB';
+            } else {
+                ageOutput.value = years + "Y, " + months + "M";
+            }
+        }
+
+
+        // IMAGE PREVIEW
+        function previewImg(inputElement, imgId, boxId) {
+
+            const file = inputElement.files[0];
+            const imgElement = document.getElementById(imgId);
+            const boxElement = document.getElementById(boxId);
+
+            if (file) {
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = "block";
+
+                    let span = boxElement.querySelector('span');
+                    if (span) span.style.display = "none";
+                };
+
+                reader.readAsDataURL(file);
+
+            } else {
+
+                imgElement.style.display = "none";
+                imgElement.src = "";
+
+                let span = boxElement.querySelector('span');
+                if (span) span.style.display = "inline";
+            }
+        }
+
+
+        // SAVE FORM AS PDF
+        function saveAsPDF() {
+
+            const element = document.getElementById('printableArea');
+            const alerts = document.querySelectorAll('.alert');
+
+            alerts.forEach(el => el.style.display = "none");
+
+            const childNameInput = document.querySelector('input[name="child_name"]');
+
+            let pdfFilename = "Admission_Form.pdf";
+
+            if (childNameInput && childNameInput.value.trim() !== "") {
+                pdfFilename = "Admission_Form_" +
+                    childNameInput.value.trim().replace(/\s+/g, "_") + ".pdf";
+            }
+
+            const opt = {
+                margin: 0,
+                filename: pdfFilename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                alerts.forEach(el => el.style.display = "");
+            });
+        }
+
+
+
+        // SUBMIT FORM TO GOOGLE SHEETS
+        function submitForm(e) {
+
+            e.preventDefault();
+
+            const form = document.getElementById("admissionForm");
+            const submitBtn = document.getElementById("submitBtn");
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const scriptURL = "https://script.google.com/macros/s/AKfycbwl3Kozq1KN3rUsQ_yarDOxNW3PcZWNA-QIQeXSkv6NcCU6dWfOyu7WUY2gaV-96II-/exec";
+            submitBtn.innerText = "Submitting...";
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: new URLSearchParams(formData)
+            })
+                .then(response => response.text())
+                .then(data => {
+
+                    alert("✅ Form submitted successfully to Google Sheets!");
+
+
+
+                    submitBtn.innerText = "Submit Form";
+                    submitBtn.disabled = false;
+
+                    setTimeout(() => {
+
+                        form.reset();
+
+                        const dateField = document.getElementById('date');
+                        if (dateField) {
+                            dateField.valueAsDate = new Date();
+                        }
+
+                    }, 1500);
+
+                })
+                .catch(error => {
+
+                    alert("❌ Error submitting form: " + error);
+
+                    submitBtn.innerText = "Submit Form";
+                    submitBtn.disabled = false;
+
+                });
+        }
+
+    </script>
+</body>
+
+</html>
